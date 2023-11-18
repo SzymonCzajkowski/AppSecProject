@@ -11,6 +11,7 @@
     <a href="/">Home</a>
     {% if session["isGuest"] %}
     <a href="/logIn">Log in</a>
+    <a href="/register">Register</a>
     {% else %}
     <a href="/">Hello {{session["username"]}}</a>
     <a href="/logOut">Log out</a>

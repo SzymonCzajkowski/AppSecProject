@@ -8,12 +8,17 @@
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for msg in messages %}
-                    <p class="errorMsg">{{msg}}</p>
+                    <div class="alert">
+                      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                      {{msg}}
+                    </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
         <label><b>Username</b></label>
         <input type="text" placeholder="Enter Username" name="username" required>
+        <label><b>Email</b></label>
+        <input type="text" placeholder="Enter Email" name="email" required>
         <label><b>Password</b></label>
         <input type="password" placeholder="Enter Password" name="password" required>
         <button type="submit" class="loginButton">Login</button>
