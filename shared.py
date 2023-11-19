@@ -66,7 +66,3 @@ def check_strong_password(password):
 def check_email(email):
     email_pattern = "([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+"
     return re.fullmatch(email_pattern, email)
-
-
-salt = '$2b$15$VZRHxC8mz66qv80l/AdoH.'
-hashing_process('admin',  salt)
