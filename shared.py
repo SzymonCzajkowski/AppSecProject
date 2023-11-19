@@ -4,18 +4,20 @@ import bcrypt
 from Cryptodome.Cipher import AES
 
 
-def passwd_validate(hash_input, encrypted_hash, nonce, tag, pepper=b'0\xeb\xa2\x8fl\xc1%\xe3\xbe\x80$\xd4\x15\x043\xe9\xdeGf\xbb\x96\x9a\xd4XQ5\xc8\xb4\xe9\x83\xcb7'):
-    return ''
+def validation_process(input, encrypted_hash, user_salt, nonce, tag, pepper=b'0\xeb\xa2\x8fl\xc1%\xe3\xbe\x80$\xd4\x15\x043\xe9\xdeGf\xbb\x96\x9a\xd4XQ5\xc8\xb4\xe9\x83\xcb7'):
+    hash = sha512hashing(input)
+    hash = bcrypthashing(hash, user_salt.encode('UTF-8'))
+    return hash == decryptAES256(bytes.fromhex(encrypted_hash), bytes.fromhex(nonce), bytes.fromhex(tag)).decode('UTF-8')
 
 
 def hashing_process(input, user_salt, pepper=b'0\xeb\xa2\x8fl\xc1%\xe3\xbe\x80$\xd4\x15\x043\xe9\xdeGf\xbb\x96\x9a\xd4XQ5\xc8\xb4\xe9\x83\xcb7'):
-    hash = sha512hashing(input)
-    hash = bcrypthashing(hash, user_salt.encode('UTF-8'))
-    hash, nonce, tag = encryptAES256(hash, pepper)
-    print(hash.hex())
-    print(nonce.hex())
-    print(tag.hex())
-    return hash, nonce, tag
+    encrypted_hash = sha512hashing(input)
+    encrypted_hash = bcrypthashing(encrypted_hash, user_salt.encode('UTF-8'))
+    encrypted_hash, nonce, tag = encryptAES256(encrypted_hash, pepper)
+    print(encrypted_hash)
+    print(nonce)
+    print(tag)
+    return encrypted_hash.hex(), nonce.hex(), tag.hex()
 
 
 def encryptAES256(input, pepper):
@@ -24,8 +26,17 @@ def encryptAES256(input, pepper):
     return cipherinput, cipher.nonce, tag
 
 
-def bcrypthashing(input, user_salt):
+def decryptAES256(encrypted_input, nonce, tag, pepper=b'0\xeb\xa2\x8fl\xc1%\xe3\xbe\x80$\xd4\x15\x043\xe9\xdeGf\xbb\x96\x9a\xd4XQ5\xc8\xb4\xe9\x83\xcb7'):
+    print(encrypted_input)
+    print(nonce)
+    print(tag)
+    cipher = AES.new(pepper, AES.MODE_EAX, nonce)
+    decrypted_hash = cipher.decrypt_and_verify(encrypted_input, tag)
+    print(decrypted_hash)
+    return decrypted_hash
 
+
+def bcrypthashing(input, user_salt):
     return bcrypt.hashpw(input.encode('UTF-8'), user_salt).decode('UTF-8')
 
 
