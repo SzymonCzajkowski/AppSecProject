@@ -65,6 +65,9 @@ def register():
 			flash("Username must be unique!")
 			error = True
 		found_user = Users.query.filter_by(email=email).first()
+		if len(user_name) < 3:
+			flash("Username must be longer!")
+			error = True
 		if found_user:
 			flash("Email must be unique!")
 			error = True
