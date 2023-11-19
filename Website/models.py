@@ -21,5 +21,5 @@ class Users(db.Model):
         self.email = email
         self.passwordSalt = shared.gen_user_salt()
         self.passwordHash, self.passwordNonce, self.passwordTag = shared.hashing_process(
-            password, self.passwordSalt),
+            password, self.passwordSalt)
         self.isAdmin = is_admin
