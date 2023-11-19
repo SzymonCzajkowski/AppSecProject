@@ -10,7 +10,7 @@
 <div class="navbar">
     <a href="/">Home</a>
     {% if session["isGuest"] %}
-    <a href="/logIn">Log in</a>
+    <a href="/login">Log in</a>
     <a href="/register">Register</a>
     {% else %}
     <a href="/">Hello {{session["username"]}}</a>

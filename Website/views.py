@@ -8,40 +8,40 @@ views = Blueprint('views', __name__)
 
 @views.route('/')
 def home():
-	if "isGuest" not in session:
-		session["isGuest"] = True
+    if "isGuest" not in session:
+        session["isGuest"] = True
 
-	return render_template("index.html", session=session)
+    return render_template("index.html", session=session)
 
 
-@views.route('/logIn', methods=["POST", "GET"])
+@views.route('/login', methods=["POST", "GET"])
 def log_in():
-	if "isGuest" not in session:
-		session["isGuest"] = True
+    if "isGuest" not in session:
+        session["isGuest"] = True
 
-	# If user is logged in redirect to home
-	if not session["isGuest"]:
-		return redirect(url_for("views.home"))
+    # If user is logged in redirect to home
+    if not session["isGuest"]:
+        return redirect(url_for("views.home"))
 
-	if request.method == "POST":
-		username = request.form["username"]
-		password = request.form["password"]
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
 
-		# Check credentials
-		error = False
-		found_user = Users.query.filter_by(userName=username).first()
-		if not found_user or found_user.passwordHash != shared.calculate_hash(password, found_user.passwordSalt):
-			flash("Wrong username or password!")
-			error = True
+        # Check credentials
+        error = False
+        found_user = Users.query.filter_by(userName=username).first()
+        if not found_user or not shared.validation_process(password, found_user.passwordHash, found_user.passwordSalt, found_user.passwordNonce, found_user.passwordTag):
+            flash("Wrong username or password!")
+            error = True
 
-		if error:
-			return render_template("login.html", session=session)
+        if error:
+            return render_template("login.html", session=session)
 
-		session["isGuest"] = False
-		session["username"] = username
-		return redirect(url_for("views.home"))
-	else:
-		return render_template("login.html", session=session)
+        session["isGuest"] = False
+        session["username"] = username
+        return redirect(url_for("views.home"))
+    else:
+        return render_template("login.html", session=session)
 
 
 @views.route('/register', methods=["POST", "GET"])
@@ -95,13 +95,13 @@ def register():
 
 @views.route('/logOut')
 def log_out():
-	if "isGuest" not in session:
-		session["isGuest"] = True
-	# If user is logged in redirect to home
-	if session["isGuest"]:
-		return redirect(url_for("views.home"))
+    if "isGuest" not in session:
+        session["isGuest"] = True
+    # If user is logged in redirect to home
+    if session["isGuest"]:
+        return redirect(url_for("views.home"))
 
-	session["isGuest"] = True
-	session.pop("username", None)
-	flash("Successfully logged out")
-	return redirect(url_for("views.home"))
+    session["isGuest"] = True
+    session.pop("username", None)
+    flash("Successfully logged out")
+    return redirect(url_for("views.home"))
