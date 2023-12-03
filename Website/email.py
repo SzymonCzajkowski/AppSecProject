@@ -1,4 +1,5 @@
 from flask_mail import Message
+from Website import mail, app
 
 
 def send_email(to, subject, template):
@@ -6,6 +7,6 @@ def send_email(to, subject, template):
         subject,
         recipients=[to],
         html=template,
-        sender='filipk0@op.pl'
+        sender=app.config['MAIL_DEFAULT_SENDER']
     )
-    Message.send(msg)
+    mail.send(msg)
