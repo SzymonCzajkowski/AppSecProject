@@ -18,12 +18,12 @@ class Users(db.Model):
     isConfirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmedOn = db.Column(db.DateTime, nullable=True)
 
-    def __init__(self, name, email, password, is_admin=False, is_confirmed=False, confirmed_on=None):
+    def __init__(self, name, email, password, is_admin=False, isConfirmed=False, confirmedOn=None):
         self.userName = name
         self.email = email
         self.passwordSalt = shared.gen_user_salt()
         self.passwordHash, self.passwordNonce, self.passwordTag = shared.hashing_process(
             password, self.passwordSalt)
         self.isAdmin = is_admin
-        self.is_confirmed = is_confirmed
-        self.confirmed_on = confirmed_on
+        self.isConfirmed = isConfirmed
+        self.confirmedOn = confirmedOn
