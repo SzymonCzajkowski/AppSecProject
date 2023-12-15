@@ -15,7 +15,9 @@
     {% else %}
     <a href="/">Hello {{session["username"]}}</a>
     <a href="/logOut">Log out</a>
+    <a href="/addJoke">Add joke</a>
     {% endif %}
+    {% block navbar %}{% endblock %}
 </div>
 <body>
 

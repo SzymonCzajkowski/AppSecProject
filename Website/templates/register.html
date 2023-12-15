@@ -8,7 +8,7 @@
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for msg in messages %}
-                    <div class="alert">
+                    <div class="errorMsg">
                       <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
                       {{msg}}
                     </div>
@@ -16,11 +16,11 @@
             {% endif %}
         {% endwith %}
         <label><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="username" required>
+        <input type="text" placeholder="Enter Username" name="username" maxlength="30" required value={{username}}>
         <label><b>Email</b></label>
-        <input type="text" placeholder="Enter Email" name="email" required>
+        <input type="text" placeholder="Enter Email" name="email" maxlength="60" required value={{email}}>
         <label><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="password" required>
+        <input type="password" placeholder="Enter Password" name="password" maxlength="30" required>
         <button type="submit" class="loginButton">Register</button>
     </div>
 </form>

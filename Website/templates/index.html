@@ -2,12 +2,34 @@
 
 {% block title %}Home page{% endblock %}
 
+{% block navbar %}
+<form method="post">
+    <div class="searchContainer">
+        <input type="text" placeholder="Enter title" name="title" maxlength="100" required value="{{title}}">
+        <button type="submit" class="searchButton">Search</button>
+    </div>
+</form>
+{% endblock %}
+
 {% block content %}
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for msg in messages %}
-                <p>{{msg}}</p>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="alert">
+                      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                      {{msg}}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    <div class="mainBlock">
+    {% for joke in jokes %}
+        <div class="jokeBlock">
+            <p class="jokeTitle">{{joke.title}}</p>
+            <hr>
+            <p class="jokeContent">{{joke.content}}</p>
+            <p class="jokeAuthor">{{joke.date.strftime("%d.%m.%Y %H:%M")}} {{joke.author}}</p>
+        </div>
+    {% endfor %}
+    </div>
 {% endblock %}
