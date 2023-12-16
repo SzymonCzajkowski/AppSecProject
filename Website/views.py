@@ -81,10 +81,10 @@ def register():
             flash("Username must be longer!")
             error = True
         if found_user:
-            flash("Email must be unique!")
+            flash("Email already registered")
             error = True
         if not shared.check_email(email):
-            flash("Email must look like email!")
+            flash("Wrong Email format")
             error = True
         if not shared.check_strong_password(password):
             flash("Password must be 8 characters long with at least one uppercase, lowercase and special character!")
