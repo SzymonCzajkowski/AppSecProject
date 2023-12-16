@@ -16,14 +16,18 @@ class Users(db.Model):
     passwordNonce = db.Column(db.String(32), nullable=False)
     passwordTag = db.Column(db.String(32), nullable=False)
     isAdmin = db.Column(db.BOOLEAN, nullable=False, default=False)
+    isConfirmed = db.Column(db.Boolean, nullable=False, default=False)
+    confirmedOn = db.Column(db.DateTime, nullable=True)
 
-    def __init__(self, name, email, password, is_admin=False):
+    def __init__(self, name, email, password, is_admin=False, isConfirmed=False, confirmedOn=None):
         self.userName = name
         self.email = email
         self.passwordSalt = shared.gen_user_salt()
         self.passwordHash, self.passwordNonce, self.passwordTag = shared.hashing_process(
             password, self.passwordSalt)
         self.isAdmin = is_admin
+        self.isConfirmed = isConfirmed
+        self.confirmedOn = confirmedOn
 
 
 class Jokes(db.Model):
@@ -50,4 +54,3 @@ class Comment(db.Model):
         self.jokeId = joke_id
         self.content = content
         self.author = author
-
