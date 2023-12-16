@@ -6,7 +6,7 @@ def create_app():
     # Setting Flask
 
     # Add database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///appSec.db'
     app.config['SECRET_KEY'] = '0gZ2Rmcw7-$t'
 
     # Register database

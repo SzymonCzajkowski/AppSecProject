@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 import shared
 
 # Initialize database
@@ -27,3 +28,29 @@ class Users(db.Model):
         self.isAdmin = is_admin
         self.isConfirmed = isConfirmed
         self.confirmedOn = confirmedOn
+
+
+class Jokes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.TEXT(100), nullable=False)
+    content = db.Column(db.TEXT(600), nullable=False)
+    author = db.Column(db.String(30), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def __init__(self, title, content, author):
+        self.title = title
+        self.content = content
+        self.author = author
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jokeId = db.Column(db.Integer, nullable=False)
+    content = db.Column(db.TEXT(600), nullable=False)
+    author = db.Column(db.String(30), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def __init__(self, joke_id, content, author):
+        self.jokeId = joke_id
+        self.content = content
+        self.author = author

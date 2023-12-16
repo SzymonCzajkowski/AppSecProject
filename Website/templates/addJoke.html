@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Add joke{% endblock %}
+
+{% block content %}
+<form class="login" method="post">
+    <div class="loginContainer">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for msg in messages %}
+                    <p class="errorMsg">{{msg}}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <label><b>Title</b></label>
+        <input type="text" placeholder="Enter Title" name="jokeTitle" maxlength="100" required>
+        <label><b>Content</b></label>
+        <br>
+        <textarea placeholder="Enter Content" name="jokeContent" maxlength="600" required></textarea>
+        <br>
+        <button type="submit" class="loginButton">Add</button>
+    </div>
+</form>
+{% endblock %}

@@ -1,6 +1,7 @@
 from flask import Blueprint, redirect, url_for, render_template, session, flash, request
 from .models import db
 from .models import Users
+from .models import Jokes
 from .token import generate_token, confirm_token
 from .email import send_email
 import shared
@@ -9,12 +10,19 @@ import datetime
 views = Blueprint('views', __name__)
 
 
-@views.route('/')
+@views.route('/', methods=["POST", "GET"])
 def home():
     if "isGuest" not in session:
         session["isGuest"] = True
 
-    return render_template("index.html", session=session)
+    title = ""
+
+    if request.method == "POST":
+        title = request.form["title"]
+        jokes = Jokes.query.filter(Jokes.title.contains(title))
+    else:
+        jokes = Jokes.query.all()
+    return render_template("index.html", session=session, jokes=jokes, title=title)
 
 
 @views.route('/login', methods=["POST", "GET"])
@@ -33,12 +41,13 @@ def log_in():
         # Check credentials
         error = False
         found_user = Users.query.filter_by(userName=username).first()
-        if not found_user or not shared.validation_process(password, found_user.passwordHash, found_user.passwordSalt, found_user.passwordNonce, found_user.passwordTag):
+        if not found_user or not shared.validation_process(password, found_user.passwordHash, found_user.passwordSalt,
+                                                           found_user.passwordNonce, found_user.passwordTag):
             flash("Wrong username or password!")
             error = True
 
         if error:
-            return render_template("login.html", session=session)
+            return render_template("login.html", session=session, username=username)
 
         session["isGuest"] = False
         session["username"] = username
@@ -72,10 +81,10 @@ def register():
             flash("Username must be longer!")
             error = True
         if found_user:
-            flash("Email must be unique!")
+            flash("Email already registered")
             error = True
         if not shared.check_email(email):
-            flash("Email must look like email!")
+            flash("Wrong Email format")
             error = True
         if not shared.check_strong_password(password):
             flash("Password must be 8 characters long with at least one uppercase, lowercase and special character!")
@@ -83,7 +92,7 @@ def register():
 
         # if something is wrong return registration page
         if error:
-            return render_template("register.html", session=session)
+            return render_template("register.html", session=session, username=user_name, email=email)
 
         # If everything is fine add new user
         user = Users(user_name, email, password)
@@ -137,3 +146,23 @@ def log_out():
     session.pop("username", None)
     flash("Successfully logged out")
     return redirect(url_for("views.home"))
+
+
+@views.route('/addJoke', methods=["POST", "GET"])
+def add_joke():
+    if "isGuest" not in session:
+        session["isGuest"] = True
+    # If user is not logged in redirect to home
+    if session["isGuest"]:
+        return redirect(url_for("views.home"))
+
+    if request.method == "POST":
+        title = request.form["jokeTitle"]
+        content = request.form["jokeContent"]
+        joke = Jokes(title, content, session["username"])
+        db.session.add(joke)
+        db.session.commit()
+        flash("Joke Added successfully!")
+        return redirect(url_for("views.home"))
+    else:
+        return render_template("addJoke.html", session=session)
