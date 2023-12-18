@@ -88,8 +88,9 @@ def forgot():
         return render_template("forgot.html", session=session)
 
 
-@views.route('/reset-password/<token>', methods=["POST", "GET"])
-def change_password(token):
+@views.route('/reset-password', methods=["POST", "GET"])
+def change_password():
+    token = request.args.get('token')
     try:
         email = confirm_token(token, 600)
     except:
