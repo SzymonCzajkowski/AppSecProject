@@ -133,7 +133,7 @@ body {
   width: 50%;
 }
 
-.resetContainer input {
+.resetContainer a {
   color: #04AA6D;
   border: none;
   cursor: pointer;
@@ -142,7 +142,7 @@ body {
   background-color: white;
 }
 
-.resetContainer input:hover {
+.resetContainer a:hover {
   opacity: 0.8;
 }
 
