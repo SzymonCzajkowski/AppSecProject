@@ -88,7 +88,7 @@ def forgot():
         return render_template("forgot.html", session=session)
 
 
-@views.route('/reset_password/<token>', methods=["POST", "GET"])
+@views.route('/reset-password/<token>', methods=["POST", "GET"])
 def change_password(token):
     try:
         email = confirm_token(token, 600)
@@ -107,7 +107,7 @@ def change_password(token):
             flash("Passwords have to be the same!")
             error = True
         if error:
-            return render_template("reset_password.html", session=session, token=token)
+            return render_template("reset-password.html", session=session, token=token)
 
         flash('Password has been successfully changed.', 'success')
         user.update_password(password)
@@ -115,7 +115,7 @@ def change_password(token):
 
         return redirect(url_for("views.home"))
     else:
-        return render_template("reset_password.html", session=session, token=token)
+        return render_template("reset-password.html", session=session, token=token)
 
 
 @views.route('/register', methods=["POST", "GET"])
