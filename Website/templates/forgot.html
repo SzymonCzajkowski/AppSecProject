@@ -1,5 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Forgot password page{% endblock %}
+
+{% block content %}
 <form method="POST">
-    Enter your Email:
-    <input type="text" name="email">
-    <input type="submit" value="button" name="submit_button">
+    {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="errorMsg">
+                      <span class="closebtn" onclick="this.parentElement.style.display='none';"></span>
+                      {{msg}}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    <div>
+        Enter your Email:
+        <input type="text" name="email">
+        <input type="submit" value="Send email" name="submit_button">
+    </div>
 </form>
+{% endblock %}

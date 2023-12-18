@@ -56,6 +56,23 @@ def log_in():
         return render_template("login.html", session=session)
 
 
+@views.route('/forgot', methods=["POST", "GET"])
+def forgot():
+    if request.method == "POST":
+        email = request.form["email"]
+
+        # Check email
+        error = False
+        if not shared.check_email(email):
+            flash("Wrong Email format")
+            error = True
+
+        if error:
+            return render_template("forgot.html", session=session, email=email)
+    else:
+        return render_template("forgot.html", session=session)
+
+
 @views.route('/register', methods=["POST", "GET"])
 def register():
     if "isGuest" not in session:
