@@ -127,6 +127,83 @@ body {
   opacity: 0.8;
 }
 
+.resetContainer {
+  margin: auto;
+  padding: 1%;
+  width: 50%;
+}
+
+.resetContainer a {
+  color: #04AA6D;
+  border: none;
+  cursor: pointer;
+  font: bold;
+  font-size: 16px;
+  background-color: white;
+}
+
+.resetContainer a:hover {
+  opacity: 0.8;
+}
+
+.forgotContainer input[type=text], textarea {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.forgotContainer {
+  margin: auto;
+  padding: 10%;
+  width: 50%;
+}
+
+.forgotContainer button{
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 33%;
+}
+
+.forgotContainer button:hover {
+  opacity: 0.8;
+}
+
+.resetContainer input[type=password], textarea {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.resetContainer {
+  margin: auto;
+  padding: 10%;
+  width: 50%;
+}
+
+.resetContainer button{
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 33%;
+}
+
+.resetContainer button:hover {
+  opacity: 0.8;
+}
+
 /* Messages */
 .errorMsg {
   padding: 20px;

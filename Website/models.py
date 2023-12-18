@@ -29,6 +29,10 @@ class Users(db.Model):
         self.isConfirmed = isConfirmed
         self.confirmedOn = confirmedOn
 
+    def update_password(self, password):
+        self.passwordHash, self.passwordNonce, self.passwordTag = shared.hashing_process(
+            password, self.passwordSalt)
+
 
 class Jokes(db.Model):
     id = db.Column(db.Integer, primary_key=True)

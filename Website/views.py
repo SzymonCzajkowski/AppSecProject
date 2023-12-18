@@ -56,6 +56,69 @@ def log_in():
         return render_template("login.html", session=session)
 
 
+@views.route('/forgot', methods=["POST", "GET"])
+def forgot():
+    if request.method == "POST":
+        email = request.form["email"]
+
+        # Check email
+        error = False
+        if not shared.check_email(email):
+            flash("Wrong Email format")
+            error = True
+
+        if error:
+            return render_template("forgot.html", session=session, email=email)
+
+        user = Users.query.filter_by(email=email).first()
+
+        # Generate password reset token
+        if user != None:
+            token = generate_token(user.email)
+            reset_url = url_for('views.change_password',
+                                token=token, _external=True)
+            html = render_template('pass_reset.html',
+                                   reset_url=reset_url)
+            subject = "Password reset link"
+            send_email(user.email, subject, html)
+
+        flash('Password reset link has been send to the email if you have an account associated with the email address.', 'success')
+        return redirect(url_for("views.home"))
+    else:
+        return render_template("forgot.html", session=session)
+
+
+@views.route('/reset-password', methods=["POST", "GET"])
+def change_password():
+    token = request.args.get('token')
+    try:
+        email = confirm_token(token, 600)
+    except:
+        flash('The password reset link is invalid or has expired.', 'danger')
+    user = Users.query.filter_by(email=email).first_or_404()
+    if request.method == "POST":
+        password = request.form["password"]
+        password_ver = request.form["passwordVerification"]
+
+        error = False
+        if not shared.check_strong_password(password):
+            flash("Password must be 8 characters long with at least one uppercase, lowercase and special character!")
+            error = True
+        if password != password_ver:
+            flash("Passwords have to be the same!")
+            error = True
+        if error:
+            return render_template("reset-password.html", session=session, token=token)
+
+        flash('Password has been successfully changed.', 'success')
+        user.update_password(password)
+        db.session.commit()
+
+        return redirect(url_for("views.home"))
+    else:
+        return render_template("reset-password.html", session=session, token=token)
+
+
 @views.route('/register', methods=["POST", "GET"])
 def register():
     if "isGuest" not in session:
