@@ -2,6 +2,23 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
+textarea {
+  resize: none;
+}
+
+.jokeLink {
+  color: black;
+  text-decoration: none;
+}
+
+.addCommentButton {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  cursor: pointer;
+}
+
 /* Searching title */
 .searchContainer {
     margin: 10px;
@@ -27,7 +44,7 @@
   opacity: 0.8;
 }
 
-/* Jokes */
+/* Jokes and comments */
 .mainBlock {
     width: 60%;
     min-width: 500px;
@@ -46,6 +63,12 @@
 
 }
 
+.commentBlock {
+    margin: 20px;
+    padding: 10px;
+    background: white;
+}
+
 .jokeTitle {
     margin: 0px;
     padding: 0px;
@@ -53,9 +76,26 @@
     font-weight: bold;
 }
 
+.commentAuthor {
+    margin: 0px;
+    padding: 0px;
+    font-size: 15px;
+    font-weight: bold;
+}
+.commentDate {
+   margin: 0px;
+    padding: 0px;
+    font-size: 8px;
+}
+
 .jokeContent {
     margin: 0px;
     padding: 0px;
+}
+
+.commentContent {
+    margin: 4px;
+    padding: 4px;
 }
 
 .jokeAuthor {

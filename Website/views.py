@@ -2,6 +2,7 @@ from flask import Blueprint, redirect, url_for, render_template, session, flash,
 from .models import db
 from .models import Users
 from .models import Jokes
+from .models import Comment
 from .token import generate_token, confirm_token
 from .email import send_email
 import shared
@@ -229,3 +230,18 @@ def add_joke():
         return redirect(url_for("views.home"))
     else:
         return render_template("addJoke.html", session=session)
+
+
+@views.route('/joke/<joke_id>', methods=["POST", "GET"])
+def joke(joke_id):
+    if "isGuest" not in session:
+        session["isGuest"] = True
+    if request.method == "POST":
+        comment_content = request.form["comment"]
+        comment = Comment(int(joke_id), comment_content, session["username"])
+        db.session.add(comment)
+        db.session.commit()
+
+    joke = Jokes.query.filter_by(id=int(joke_id)).first_or_404()
+    comments = Comment.query.filter_by(jokeId=joke_id)
+    return render_template("joke.html", session=session, joke=joke, comments=comments)
