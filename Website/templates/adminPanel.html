@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Admin panel{% endblock %}
+
+{% block navbar %}
+<a href="/adminPanel/users">Manage users</a>
+<a href="/adminPanel/jokes">Manage jokes</a>
+{% endblock %}
+
+{% block content %}
+  <div class="mainBlock">
+
+      {% for user in users %}
+        <div class="commentBlock">
+            <p class="commentContent">Username: <b>{{user.userName}}</b> Email: <b>{{user.email}}</b></p>
+        </div>
+      <a class="deleteButton" href="/deleteUser/{{user.id}}">Delete User</a>
+    {% endfor %}
+
+      {% for joke in jokes %}
+      <div class="jokeBlock">
+          <p class="jokeTitle">{{joke.title}}</p>
+          <hr>
+          <p class="jokeContent">{{joke.content}}</p>
+          <p class="jokeAuthor">{{joke.date.strftime("%d.%m.%Y %H:%M")}} {{joke.author}}</p>
+      </div>
+      <a class="deleteButton" href="/deleteJoke/{{joke.id}}">Delete Joke</a>
+      {% for comment in comments %}
+      {% if joke.id == comment.jokeId %}
+        <div class="commentBlock">
+            <p class="commentAuthor">{{comment.author}}</p>
+            <p class="commentContent">{{comment.content}}</p>
+            <p class="commentDate">{{comment.date.strftime("%d.%m.%Y %H:%M")}}</p>
+        </div>
+      <a class="deleteButton" href="/deleteComment/{{comment.id}}">Delete Comment</a>
+      {% endif %}
+    {% endfor %}
+      {% endfor %}
+  </div>
+
+{% endblock %}

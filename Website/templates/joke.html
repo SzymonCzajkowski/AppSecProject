@@ -11,14 +11,7 @@
           <p class="jokeAuthor">{{joke.date.strftime("%d.%m.%Y %H:%M")}} {{joke.author}}</p>
       </div>
       <form method="post">
-    <div >
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for msg in messages %}
-                    <p class="errorMsg">{{msg}}</p>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    <div>
         <label><b>Comment</b></label>
         <br>
         <textarea placeholder="Enter comment" name="comment" maxlength="600" required></textarea>

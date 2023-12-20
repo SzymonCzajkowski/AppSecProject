@@ -13,7 +13,7 @@
     <a href="/login">Log in</a>
     <a href="/register">Register</a>
     {% else %}
-    <a href="/">Hello {{session["username"]}}</a>
+    <a href="/adminPanel">Hello {{session["username"]}}</a>
     <a href="/logOut">Log out</a>
     <a href="/addJoke">Add joke</a>
     {% endif %}

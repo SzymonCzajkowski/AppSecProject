@@ -245,3 +245,83 @@ def joke(joke_id):
     joke = Jokes.query.filter_by(id=int(joke_id)).first_or_404()
     comments = Comment.query.filter_by(jokeId=joke_id)
     return render_template("joke.html", session=session, joke=joke, comments=comments)
+
+
+@views.route('/adminPanel')
+@views.route('/adminPanel/<data>')
+def admin_panel(data=None):
+    if "isGuest" not in session:
+        session["isGuest"] = True
+    if session["isGuest"]:
+        return redirect(url_for("views.home"))
+    user = Users.query.filter_by(userName=session["username"]).first_or_404()
+    if not user.isAdmin:
+        return redirect(url_for("views.home"))
+
+    users = []
+    jokes = []
+    comments = []
+
+    if data == "users":
+        users = Users.query.all()
+    elif data == "jokes":
+        jokes = Jokes.query.all()
+        comments = Comment.query.all()
+
+    return render_template("adminPanel.html", users=users, jokes=jokes, comments=comments)
+
+
+@views.route('/deleteUser/<id>')
+def delete_user(id):
+    if "isGuest" not in session:
+        session["isGuest"] = True
+    if session["isGuest"]:
+        return redirect(url_for("views.home"))
+    user = Users.query.filter_by(userName=session["username"]).first_or_404()
+    if not user.isAdmin:
+        return redirect(url_for("views.home"))
+
+    Users.query.filter_by(id=id).delete()
+    db.session.commit()
+
+    return redirect(url_for("views.admin_panel") + "/users")
+
+
+@views.route('/deleteJoke/<id>')
+def delete_joke(id):
+    if "isGuest" not in session:
+        session["isGuest"] = True
+    if session["isGuest"]:
+        return redirect(url_for("views.home"))
+    user = Users.query.filter_by(userName=session["username"]).first_or_404()
+    if not user.isAdmin:
+        return redirect(url_for("views.home"))
+
+    Jokes.query.filter_by(id=id).delete()
+    Comment.query.filter_by(jokeId=id).delete()
+    db.session.commit()
+
+    return redirect(url_for("views.admin_panel") + "/jokes")
+
+
+@views.route('/deleteComment/<id>')
+def delete_comment(id):
+    if "isGuest" not in session:
+        session["isGuest"] = True
+    if session["isGuest"]:
+        return redirect(url_for("views.home"))
+    user = Users.query.filter_by(userName=session["username"]).first_or_404()
+    if not user.isAdmin:
+        return redirect(url_for("views.home"))
+
+    Comment.query.filter_by(id=id).delete()
+    db.session.commit()
+
+    return redirect(url_for("views.admin_panel") + "/jokes")
+
+
+# All unmatched urls redirect to home
+@views.route('/', defaults={'path': ''})
+@views.route('/<path:path>')
+def catch_all(path):
+    return redirect(url_for("views.home"))
