@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Joke{% endblock %}
+
+{% block content %}
+  <div class="mainBlock">
+      <div class="jokeBlock">
+          <p class="jokeTitle">{{joke.title}}</p>
+          <hr>
+          <p class="jokeContent">{{joke.content}}</p>
+          <p class="jokeAuthor">{{joke.date.strftime("%d.%m.%Y %H:%M")}} {{joke.author}}</p>
+      </div>
+      <form method="post">
+    <div>
+        <label><b>Comment</b></label>
+        <br>
+        <textarea placeholder="Enter comment" name="comment" maxlength="600" required></textarea>
+        <br>
+        <button type="submit" class="addCommentButton">Add</button>
+    </div>
+</form>
+      {% for comment in comments %}
+        <div class="commentBlock">
+            <p class="commentAuthor">{{comment.author}}</p>
+            <p class="commentContent">{{comment.content}}</p>
+            <p class="commentDate">{{comment.date.strftime("%d.%m.%Y %H:%M")}}</p>
+        </div>
+    {% endfor %}
+  </div>
+{% endblock %}
