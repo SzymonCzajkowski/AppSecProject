@@ -20,9 +20,17 @@ def home():
 
     if request.method == "POST":
         title = request.form["title"]
-        jokes = Jokes.query.filter(Jokes.title.contains(title))
+        try:
+            jokes = Jokes.query.filter(Jokes.title.contains(title))
+        except:
+            flash("Something went wrong!")
+            return redirect(url_for("views.home"))
     else:
-        jokes = Jokes.query.all()
+        try:
+            jokes = Jokes.query.all()
+        except:
+            flash("Something went wrong!")
+            return redirect(url_for("views.home"))
     return render_template("index.html", session=session, jokes=jokes, title=title)
 
 
@@ -41,7 +49,12 @@ def log_in():
 
         # Check credentials
         error = False
-        found_user = Users.query.filter_by(userName=username).first()
+        try:
+            found_user = Users.query.filter_by(userName=username).first()
+        except:
+            flash("Something went wrong!")
+            return redirect(url_for("views.home"))
+
         if not found_user or not shared.validation_process(password, found_user.passwordHash, found_user.passwordSalt,
                                                            found_user.passwordNonce, found_user.passwordTag):
             flash("Wrong username or password!")
@@ -71,7 +84,11 @@ def forgot():
         if error:
             return render_template("forgot.html", session=session, email=email)
 
-        user = Users.query.filter_by(email=email).first()
+        try:
+            user = Users.query.filter_by(email=email).first()
+        except:
+            flash("Something went wrong!")
+            return redirect(url_for("views.home"))
 
         # Generate password reset token
         if user != None:
@@ -96,7 +113,11 @@ def change_password():
         email = confirm_token(token, 600)
     except:
         flash('The password reset link is invalid or has expired.', 'danger')
-    user = Users.query.filter_by(email=email).first_or_404()
+    try:
+        user = Users.query.filter_by(email=email).first()
+    except:
+        flash("Something went wrong!")
+        return redirect(url_for("views.home"))
     if request.method == "POST":
         password = request.form["password"]
         password_ver = request.form["passwordVerification"]
@@ -136,11 +157,19 @@ def register():
 
         # Check if everything is ok
         error = False
-        found_user = Users.query.filter_by(userName=user_name).first()
+        try:
+            found_user = Users.query.filter_by(userName=user_name).first()
+        except:
+            flash("Something went wrong!")
+            return redirect(url_for("views.home"))
         if found_user:
             flash("Username must be unique!")
             error = True
-        found_user = Users.query.filter_by(email=email).first()
+        try:
+            found_user = Users.query.filter_by(email=email).first()
+        except:
+            flash("Something went wrong!")
+            return redirect(url_for("views.home"))
         if len(user_name) < 3:
             flash("Username must be longer!")
             error = True
@@ -186,7 +215,11 @@ def confirm_email(token):
         email = confirm_token(token)
     except:
         flash('The confirmation link is invalid or has expired.', 'danger')
-    user = Users.query.filter_by(email=email).first_or_404()
+    try:
+        user = Users.query.filter_by(email=email).first()
+    except:
+        flash("Something went wrong!")
+        return redirect(url_for("views.home"))
     if user.isConfirmed:
         flash('Account is already confirmed. Please login.', 'success')
     else:
@@ -241,9 +274,18 @@ def joke(joke_id):
         comment = Comment(int(joke_id), comment_content, session["username"])
         db.session.add(comment)
         db.session.commit()
+        return redirect(url_for("views.joke", joke_id=joke_id))
 
-    joke = Jokes.query.filter_by(id=int(joke_id)).first_or_404()
-    comments = Comment.query.filter_by(jokeId=joke_id)
+    try:
+        joke = Jokes.query.filter_by(id=int(joke_id)).first()
+    except:
+        flash("Something went wrong!")
+        return redirect(url_for("views.home"))
+    try:
+        comments = Comment.query.filter_by(jokeId=joke_id)
+    except:
+        flash("Something went wrong!")
+        return redirect(url_for("views.home"))
     return render_template("joke.html", session=session, joke=joke, comments=comments)
 
 
@@ -254,7 +296,11 @@ def admin_panel(data=None):
         session["isGuest"] = True
     if session["isGuest"]:
         return redirect(url_for("views.home"))
-    user = Users.query.filter_by(userName=session["username"]).first_or_404()
+    try:
+        user = Users.query.filter_by(userName=session["username"]).first()
+    except:
+        flash("Something went wrong!")
+        return redirect(url_for("views.home"))
     if not user.isAdmin:
         return redirect(url_for("views.home"))
 
@@ -263,10 +309,18 @@ def admin_panel(data=None):
     comments = []
 
     if data == "users":
-        users = Users.query.all()
+        try:
+            users = Users.query.all()
+        except:
+            flash("Something went wrong!")
+            return redirect(url_for("views.home"))
     elif data == "jokes":
-        jokes = Jokes.query.all()
-        comments = Comment.query.all()
+        try:
+            jokes = Jokes.query.all()
+            comments = Comment.query.all()
+        except:
+            flash("Something went wrong!")
+            return redirect(url_for("views.home"))
 
     return render_template("adminPanel.html", users=users, jokes=jokes, comments=comments)
 
@@ -277,11 +331,18 @@ def delete_user(id):
         session["isGuest"] = True
     if session["isGuest"]:
         return redirect(url_for("views.home"))
-    user = Users.query.filter_by(userName=session["username"]).first_or_404()
+    try:
+        user = Users.query.filter_by(userName=session["username"]).first()
+    except:
+        flash("Something went wrong!")
+        return redirect(url_for("views.home"))
     if not user.isAdmin:
         return redirect(url_for("views.home"))
-
-    Users.query.filter_by(id=id).delete()
+    try:
+        Users.query.filter_by(id=id).delete()
+    except:
+        flash("Something went wrong!")
+        return redirect(url_for("views.home"))
     db.session.commit()
 
     return redirect(url_for("views.admin_panel") + "/users")
@@ -293,12 +354,20 @@ def delete_joke(id):
         session["isGuest"] = True
     if session["isGuest"]:
         return redirect(url_for("views.home"))
-    user = Users.query.filter_by(userName=session["username"]).first_or_404()
+    try:
+        user = Users.query.filter_by(userName=session["username"]).first()
+    except:
+        flash("Something went wrong!")
+        return redirect(url_for("views.home"))
     if not user.isAdmin:
         return redirect(url_for("views.home"))
 
-    Jokes.query.filter_by(id=id).delete()
-    Comment.query.filter_by(jokeId=id).delete()
+    try:
+        Jokes.query.filter_by(id=id).delete()
+        Comment.query.filter_by(jokeId=id).delete()
+    except:
+        flash("Something went wrong!")
+        return redirect(url_for("views.home"))
     db.session.commit()
 
     return redirect(url_for("views.admin_panel") + "/jokes")
@@ -310,11 +379,19 @@ def delete_comment(id):
         session["isGuest"] = True
     if session["isGuest"]:
         return redirect(url_for("views.home"))
-    user = Users.query.filter_by(userName=session["username"]).first_or_404()
+    try:
+        user = Users.query.filter_by(userName=session["username"]).first()
+    except:
+        flash("Something went wrong!")
+        return redirect(url_for("views.home"))
     if not user.isAdmin:
         return redirect(url_for("views.home"))
 
-    Comment.query.filter_by(id=id).delete()
+    try:
+        Comment.query.filter_by(id=id).delete()
+    except:
+        flash("Something went wrong!")
+        return redirect(url_for("views.home"))
     db.session.commit()
 
     return redirect(url_for("views.admin_panel") + "/jokes")

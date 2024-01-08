@@ -52,7 +52,7 @@ def calculate_hash(password):
 
 
 def check_strong_password(password):
-    password_pattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
+    password_pattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[_<>#?!@$%^&*-]).{8,}$"
     return re.match(password_pattern, password)
 
 
