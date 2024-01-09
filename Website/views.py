@@ -271,7 +271,11 @@ def joke(joke_id):
         session["isGuest"] = True
     if request.method == "POST":
         comment_content = request.form["comment"]
-        comment = Comment(int(joke_id), comment_content, session["username"])
+        if "username" in session:
+            username = session["username"]
+        else:
+            username = "anonymous"
+        comment = Comment(int(joke_id), comment_content, username)
         db.session.add(comment)
         db.session.commit()
         return redirect(url_for("views.joke", joke_id=joke_id))
