@@ -7,6 +7,7 @@ from .token import generate_token, confirm_token
 from .email import send_email
 import shared
 import datetime
+from sqlalchemy import or_
 
 views = Blueprint('views', __name__)
 
@@ -21,7 +22,7 @@ def home():
     if request.method == "POST":
         title = request.form["title"]
         try:
-            jokes = Jokes.query.filter(Jokes.title.contains(title))
+            jokes = Jokes.query.filter(or_(Jokes.title.contains(title), Jokes.content.contains(title)))
         except:
             flash("Something went wrong!")
             return redirect(url_for("views.home"))
